@@ -1,5 +1,5 @@
 # CSC384Project2016Fall
-# Othello
+# Othello (reversi)
 
 
 Team size: 3
