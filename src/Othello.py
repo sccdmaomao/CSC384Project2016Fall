@@ -1,10 +1,20 @@
-'''
-othello.py should contain everything the game needs to be play, 
-i.e. the 8x8 board, the rules of placing down pieces, the winning condition check. etc.
-'''
+"""
+Othello.py is a class that represent the game Othello.
+
+Othello contains a 8x8 board represented by a nested list.
+The list is filled with 0, 1, None.
+where 0 represents black pieces,
+1 represents white pieces,
+and None represent empty spaces.
+
+Othello class is able to determine if the game has ended or not.
+
+When playing Othello, we assume the white player play first.
+"""
+
 
 class Othello:
-    '''
+    """
     The game board will be represented by a 8 by 8 grid. Using a nested list.
     Each blank is either 0 for black piece, 1 for white piece, or None for empty
     Example:
@@ -13,56 +23,110 @@ class Othello:
     [None None, None, None, None ,None, None, None],
     [None None, None, None, None ,None, None, None],
     [None None, None, None, None ,None, None, None],
-    [None None, None, 0, 1 ,None, None, None],
-    [None None, None, 1, 0 ,None, None, None],
+    [None None, None, 0   , 1    ,None, None, None],
+    [None None, None, 1   , 0    ,None, None, None],
     [None None, None, None, None ,None, None, None],
     [None None, None, None, None ,None, None, None],
     [None None, None, None, None ,None, None, None],
     ]
-    '''
-    def __init__(self, board = [[None]*8]*8):
+    """
+
+    def __init__(self, board=[[None]*8]*8):
         self.board = board
+        self.current_player = 1  # white player starts first
         
         # num of pieces need to be updated each time a player drop a move.
-        self.numOfWhite = countPiece(1)
-        self.numOfBlack = countPiece(0)
+        self.num_white = self.count_disks(1)
+        self.num_black = self.count_disks(0)
         
-    def is_gameOver(self):
-        '''
+    def successors(self):
+        """
+        Generate all position actions that can be performed based on current board and current player.
+        :return: return a list where each element in the list is a board.
+        """
+
+        return []
+        
+    def is_game_over(self):
+        """
+        Check game ending conditions.
         Game is over when all the empty space has been filled.
-        '''
-        for row in self.board:
-            for col in self.board:
-                if self.board[row][col] == None:
-                    return False
-        return True
+        Or neither players can make a valid move.
+        :return: True iff game is over.
+        """
+
+        if not self.sucessirs():  # if list is empty.
+            # pass turn to opponent to see if neither has possible move.
+            self.current_player = 1 - self.current_player
+            if not self.sucessirs():
+                return True   # Game ended with no more possible move
+            self.current_player = 1 - self.current_player  # switch player back
+        return False
     
-    def winner(self):
-        '''
-        Return winning color if game is over.
-        '''
-        if is_gameOver():
-            if self.numOfWhite > self.numOfBlack:
+    def get_winner(self):
+        """
+        :return:  The winner or "Tie Game" for tie.
+        or None if game is not over yet.
+        """
+
+        if self.is_game_over():
+            if self.num_white > self.num_black:
                 return 1
-            return 0
-        return None # no winner yet
+            elif self.num_white < self.num_black:
+                return 0
+            return "Tie Game"  # Tie game
+        return None  # no winner yet
             
-            
-    def countPiece(self, color):
-        '''
-        Return the number of piecies on current board.
-        0 = black
-        1 = white
-        '''
+    def count_disks(self, color):
+        """
+        :param color: The color in which to count for.
+        :return: number of color pieces on current board.
+        """
+
         count = 0
-        for row in self.board:
-            for col in self.board:
+        for row in range(len(self.board)):
+            for col in range(len(self.board[row])):
                 if self.board[row][col] == color:
                     count += 1
         return count
     
-    def placePiece(self, color, position):
-        '''
-        Place a piece of color color, update the board and recalculate the numbers of pieces.
-        Also check game condition at the end.
-        '''
+    def place_piece(self, position):
+        """
+        Place a piece of current player's color.
+        This function will also update the board, update current_player,
+        and check for gaming ending conditions.
+        :param position: The position where to drop a piece, it's a tuple (row, col) to define the place in nested list.
+        :return: Return the winner if game is ended. else None
+        """
+        self.board[position[0]][position[1]] = self.current_player  # place down the piece
+        if self.is_game_over():
+            return self.get_winner()
+        else:
+            self.current_player = 1 - self.current_player
+        return None
+
+    def print_board(self):
+        """
+        Print the String representation of the board.
+        :return: Nothing
+        """
+        for row in range(len(self.board)):
+            print("|", end="")
+            for col in range(len(self.board[row])):
+                char = " "
+                if type(self.board[row][col]) == int:
+                    char = self.board[row][col]
+                print(char, end="|")
+            print("")
+
+a = Othello([
+    [None, None, None, None, None, None, None, None],
+    [None, None, None, None, None, None, None, None],
+    [None, None, None, None, None, None, None, None],
+    [None, None, None, 0, 1, None, None, None],
+    [None, None, None, 1, 0, None, None, None],
+    [None, None, None, None, None, None, None, None],
+    [None, None, None, None, None, None, None, None],
+    [None, None, None, None, None, None, None, None],
+    ])
+a.print_board()
