@@ -55,10 +55,10 @@ class Othello:
         :return: True iff game is over.
         """
 
-        if not self.sucessirs():  # if list is empty.
+        if not self.successors():  # if list is empty.
             # pass turn to opponent to see if neither has possible move.
             self.current_player = 1 - self.current_player
-            if not self.sucessirs():
+            if not self.successors():
                 return True   # Game ended with no more possible move
             self.current_player = 1 - self.current_player  # switch player back
         return False
@@ -119,14 +119,3 @@ class Othello:
                 print(char, end="|")
             print("")
 
-a = Othello([
-    [None, None, None, None, None, None, None, None],
-    [None, None, None, None, None, None, None, None],
-    [None, None, None, None, None, None, None, None],
-    [None, None, None, 0, 1, None, None, None],
-    [None, None, None, 1, 0, None, None, None],
-    [None, None, None, None, None, None, None, None],
-    [None, None, None, None, None, None, None, None],
-    [None, None, None, None, None, None, None, None],
-    ])
-a.print_board()
