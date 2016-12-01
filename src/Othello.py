@@ -9,7 +9,7 @@ and None represent empty spaces.
 
 Othello class is able to determine if the game has ended or not.
 
-When playing Othello, we assume the white player play first.
+When playing Othello, by default the white player play first.
 """
 
 
@@ -31,9 +31,9 @@ class Othello:
     ]
     """
 
-    def __init__(self, board=[[None]*8]*8):
+    def __init__(self, board=[[None]*8]*8, current_player=1):
         self.board = board
-        self.current_player = 1  # white player starts first
+        self.current_player = current_player  # white player starts first
         
         # num of pieces need to be updated each time a player drop a move.
         self.num_white = self.count_disks(1)
@@ -42,11 +42,78 @@ class Othello:
     def successors(self):
         """
         Generate all position actions that can be performed based on current board and current player.
-        :return: return a list where each element in the list is a board.
+        :return: return a list where each element in the list is a Othello instance representing possible next state.
         """
+        successors = []
+        for row in range(len(self.board)):
+            for col in range(len(self.board[row])):
+                if type(self.board[row][col]) != int:  # an empty spot
+                    if self.valid_position((row, col)):
 
-        return []
-        
+                        # Construct an instance of Othello and add to successors
+                        new_board = self.board[:]
+                        new_board[row][col] = self.current_player
+                        next_player = 1 - self.current_player
+                        new_state = Othello(new_board, next_player)
+                        successors.append(new_state)
+
+        return successors
+
+    def valid_position(self, pos):
+        """
+        Checks whether a position is valid at position pos to place a disk.
+        :param pos: A tuple where pos[0] is row and pos[1] is col of the board.
+        :return: True iff we can place current_player's piece at position pos.
+        """
+        opponent = 1 - self.current_player
+        row = pos[0]
+        col = pos[1]
+
+        # check right side of the pos
+        if col < 6:
+            tmp_col = col + 1
+            while tmp_col < 7:
+                if tmp_col == opponent:
+                    tmp_col += 1
+                else:
+                    break
+            if tmp_col < 8 and self.board[row][tmp_col] == self.current_player:
+                return True
+
+        # check left side of the pos
+        if col > 1:
+            tmp_col = col - 1
+            while tmp_col > 0:
+                if tmp_col == opponent:
+                    tmp_col -= 1
+                else:
+                    break
+            if tmp_col > -1 and self.board[row][tmp_col] == self.current_player:
+                return True
+
+        # check top side of the pos
+        if row > 1:
+            tmp_row = row - 1
+            while tmp_row > 0:
+                if tmp_row == opponent:
+                    tmp_row -= 1
+                else:
+                    break
+            if tmp_row > -1 and self.board[tmp_row][col] == self.current_player:
+                return True
+
+        # check bottom side of the pos
+        if row < 6:
+            tmp_row = row + 1
+            while tmp_row < 7:
+                if tmp_row == opponent:
+                    tmp_row += 1
+                else:
+                    break
+            if tmp_row < 8 and self.board[tmp_row][col] == self.current_player:
+                return True
+        return False
+
     def is_game_over(self):
         """
         Check game ending conditions.
@@ -98,6 +165,9 @@ class Othello:
         :param position: The position where to drop a piece, it's a tuple (row, col) to define the place in nested list.
         :return: Return the winner if game is ended. else None
         """
+        if not self.valid_position(position):
+            raise ValueError(str.format("The position trying to place was not acceptable row:{0} col:{1}", position[0], position[1]))
+
         self.board[position[0]][position[1]] = self.current_player  # place down the piece
         if self.is_game_over():
             return self.get_winner()
