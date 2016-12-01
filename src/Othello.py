@@ -11,8 +11,9 @@ Othello class is able to determine if the game has ended or not.
 
 When playing Othello, by default the white player play first.
 """
-
 import copy
+
+
 class Othello:
     """
     The game board will be represented by a 8 by 8 grid. Using a nested list.
@@ -35,10 +36,6 @@ class Othello:
         self.board = board
         self.current_player = current_player  # white player starts first
         
-        # num of pieces need to be updated each time a player drop a move.
-        self.num_white = self.count_disks(1)
-        self.num_black = self.count_disks(0)
-        
     def successors(self):
         """
         Generate all position actions that can be performed based on current board and current player.
@@ -53,19 +50,26 @@ class Othello:
                         # Construct an instance of Othello and add to successors
                         new_board = copy.deepcopy(self.board)
                         new_board[row][col] = self.current_player
-                        next_player = 1 - self.current_player
+                        next_player = self.switch_turn()
                         new_state = Othello(new_board, next_player)
                         successors.append(new_state)
 
         return successors
 
+    def switch_turn(self):
+        """
+        Switch turns between players.
+        :return: The next player
+        """
+
+        return 1 - self.current_player
     def valid_position(self, pos):
         """
         Checks whether a position is valid at position pos to place a disk.
         :param pos: A tuple where pos[0] is row and pos[1] is col of the board.
         :return: True iff we can place current_player's piece at position pos.
         """
-        opponent = 1 - self.current_player
+        opponent = self.switch_turn()
         row = pos[0]
         col = pos[1]
 
@@ -124,10 +128,12 @@ class Othello:
 
         if not self.successors():  # if list is empty.
             # pass turn to opponent to see if neither has possible move.
-            self.current_player = 1 - self.current_player
+            self.current_player = self.switch_turn()
             if not self.successors():
+                print("Game Over!")
+                self.print_board()
                 return True   # Game ended with no more possible move
-            self.current_player = 1 - self.current_player  # switch player back
+            self.current_player = self.switch_turn()  # switch player back
         return False
     
     def get_winner(self):
@@ -137,9 +143,9 @@ class Othello:
         """
 
         if self.is_game_over():
-            if self.num_white > self.num_black:
+            if self.count_disks(0) > self.count_disks(1):
                 return 1
-            elif self.num_white < self.num_black:
+            elif self.count_disks(0) < self.count_disks(1):
                 return 0
             return "Tie Game"  # Tie game
         return None  # no winner yet
@@ -161,14 +167,13 @@ class Othello:
         """
         Place a piece of current player's color.
         This function will also update the board, update current_player,
-        and check for gaming ending conditions.
         :param position: The position where to drop a piece, it's a tuple (row, col) to define the place in nested list.
-        :return: Return the winner if game is ended. else None
+        :return: Nothing
         """
 
         row = position[0]
         col = position[1]
-        opponent = 1 - self.current_player
+        opponent = self.switch_turn()
         if not self.valid_position(position):
             raise ValueError(str.format("The position trying to place was not acceptable row:{0} col:{1}", row, col))
 
@@ -223,12 +228,8 @@ class Othello:
                 for index in range(row + 1, tmp_row):
                     self.board[index][col] = self.current_player
 
-        # Check if game is ended after this move.
-        if self.is_game_over():
-            return self.get_winner()
-        else:
-            self.current_player = 1 - self.current_player
-        return None
+        # Switch turns
+        self.current_player = self.switch_turn()
 
     def print_board(self):
         """
