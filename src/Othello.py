@@ -165,10 +165,65 @@ class Othello:
         :param position: The position where to drop a piece, it's a tuple (row, col) to define the place in nested list.
         :return: Return the winner if game is ended. else None
         """
-        if not self.valid_position(position):
-            raise ValueError(str.format("The position trying to place was not acceptable row:{0} col:{1}", position[0], position[1]))
 
-        self.board[position[0]][position[1]] = self.current_player  # place down the piece
+        row = position[0]
+        col = position[1]
+        opponent = 1 - self.current_player
+        if not self.valid_position(position):
+            raise ValueError(str.format("The position trying to place was not acceptable row:{0} col:{1}", row, col))
+
+        self.board[row][col] = self.current_player  # place down the piece
+
+        # Change the color of opponent that's in between
+        # check right side of the pos
+        if col < 6:
+            tmp_col = col + 1
+            while tmp_col < 7:
+                if self.board[row][tmp_col] == opponent:
+                    tmp_col += 1
+                else:
+                    break
+            if tmp_col < 8 and tmp_col != col + 1 and self.board[row][tmp_col] == self.current_player:
+                for index in range(col + 1, tmp_col):
+                    self.board[row][index] = self.current_player
+
+        # check left side of the pos
+        if col > 1:
+            tmp_col = col - 1
+            while tmp_col > 0:
+                if self.board[row][tmp_col] == opponent:
+                    tmp_col -= 1
+                else:
+                    break
+            if tmp_col > -1 and tmp_col != col - 1 and self.board[row][tmp_col] == self.current_player:
+                for index in range(tmp_col + 1, col):
+                    self.board[row][index] = self.current_player
+
+        # check top side of the pos
+        if row > 1:
+            tmp_row = row - 1
+            while tmp_row > 0:
+                if self.board[tmp_row][col] == opponent:
+                    tmp_row -= 1
+                else:
+                    break
+            if tmp_row > -1 and tmp_row != row - 1 and self.board[tmp_row][col] == self.current_player:
+                for index in range(tmp_row + 1, row):
+                    self.board[index][col] = self.current_player
+
+        # check bottom side of the pos
+        if row < 6:
+            tmp_row = row + 1
+            while tmp_row < 7:
+                if self.board[tmp_row][col] == opponent:
+                    tmp_row += 1
+                else:
+                    break
+            if tmp_row < 8 and tmp_row != row + 1 and self.board[tmp_row][col] == self.current_player:
+                for index in range(row + 1, tmp_row):
+                    self.board[index][col] = self.current_player
+
+        # Check if game is ended after this move.
         if self.is_game_over():
             return self.get_winner()
         else:

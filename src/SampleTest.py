@@ -37,6 +37,16 @@ class OthelloTest(unittest.TestCase):
         self.assertEqual(len(self.game.successors()), 4)
         self.assertEqual(self.game.successors()[0].current_player, 0)  # assert that successors have opponent to play next turn.
 
+    def testCountDisk(self):
+        self.assertEqual(self.game.count_disks(1), 2)
+        self.assertEqual(self.game.count_disks(0), 2)
+
+    def TestPlacePiece(self):
+        self.game.place_piece((2, 4))
+        self.assertEqual(self.game.count_disks(1), 4)  # White will have 4 disks
+        self.assertEqual(self.game.count_disks(0), 1)  # Black should have 1
+        self.failUnless(self.game.current_player == 0)  # Should be Black's turn next
+
 # class AlgorithmsTest(unittest.TestCase):
 #
 #     # def setUp(self):
