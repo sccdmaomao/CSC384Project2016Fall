@@ -12,7 +12,7 @@ Othello class is able to determine if the game has ended or not.
 When playing Othello, by default the white player play first.
 """
 
-
+import copy
 class Othello:
     """
     The game board will be represented by a 8 by 8 grid. Using a nested list.
@@ -23,8 +23,8 @@ class Othello:
     [None None, None, None, None ,None, None, None],
     [None None, None, None, None ,None, None, None],
     [None None, None, None, None ,None, None, None],
-    [None None, None, 0   , 1    ,None, None, None],
     [None None, None, 1   , 0    ,None, None, None],
+    [None None, None, 0   , 1    ,None, None, None],
     [None None, None, None, None ,None, None, None],
     [None None, None, None, None ,None, None, None],
     [None None, None, None, None ,None, None, None],
@@ -51,7 +51,7 @@ class Othello:
                     if self.valid_position((row, col)):
 
                         # Construct an instance of Othello and add to successors
-                        new_board = self.board[:]
+                        new_board = copy.deepcopy(self.board)
                         new_board[row][col] = self.current_player
                         next_player = 1 - self.current_player
                         new_state = Othello(new_board, next_player)
@@ -73,44 +73,44 @@ class Othello:
         if col < 6:
             tmp_col = col + 1
             while tmp_col < 7:
-                if tmp_col == opponent:
+                if self.board[row][tmp_col] == opponent:
                     tmp_col += 1
                 else:
                     break
-            if tmp_col < 8 and self.board[row][tmp_col] == self.current_player:
+            if tmp_col < 8 and tmp_col != col + 1 and self.board[row][tmp_col] == self.current_player:
                 return True
 
         # check left side of the pos
         if col > 1:
             tmp_col = col - 1
             while tmp_col > 0:
-                if tmp_col == opponent:
+                if self.board[row][tmp_col] == opponent:
                     tmp_col -= 1
                 else:
                     break
-            if tmp_col > -1 and self.board[row][tmp_col] == self.current_player:
+            if tmp_col > -1 and tmp_col != col - 1 and self.board[row][tmp_col] == self.current_player:
                 return True
 
         # check top side of the pos
         if row > 1:
             tmp_row = row - 1
             while tmp_row > 0:
-                if tmp_row == opponent:
+                if self.board[tmp_row][col] == opponent:
                     tmp_row -= 1
                 else:
                     break
-            if tmp_row > -1 and self.board[tmp_row][col] == self.current_player:
+            if tmp_row > -1 and tmp_row != row - 1 and self.board[tmp_row][col] == self.current_player:
                 return True
 
         # check bottom side of the pos
         if row < 6:
             tmp_row = row + 1
             while tmp_row < 7:
-                if tmp_row == opponent:
+                if self.board[tmp_row][col] == opponent:
                     tmp_row += 1
                 else:
                     break
-            if tmp_row < 8 and self.board[tmp_row][col] == self.current_player:
+            if tmp_row < 8 and tmp_row != row + 1 and self.board[tmp_row][col] == self.current_player:
                 return True
         return False
 
@@ -188,4 +188,5 @@ class Othello:
                     char = self.board[row][col]
                 print(char, end="|")
             print("")
+
 
