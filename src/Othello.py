@@ -33,7 +33,7 @@ class Othello:
     """
 
     def __init__(self, board=[[None]*8]*8, current_player=1):
-        self.board = board
+        self.board = copy.deepcopy(board)
         self.current_player = current_player  # white player starts first
         
     def successors(self):
@@ -48,10 +48,8 @@ class Othello:
                     if self.valid_position((row, col)):
 
                         # Construct an instance of Othello and add to successors
-                        new_board = copy.deepcopy(self.board)
-                        new_board[row][col] = self.current_player
-                        next_player = self.switch_turn()
-                        new_state = Othello(new_board, next_player)
+                        new_state = Othello(self.board, self.current_player)
+                        new_state.place_piece((row, col))
                         successors.append(new_state)
 
         return successors
@@ -63,6 +61,7 @@ class Othello:
         """
 
         return 1 - self.current_player
+    
     def valid_position(self, pos):
         """
         Checks whether a position is valid at position pos to place a disk.
