@@ -28,10 +28,11 @@ def most_eliminate(game):
     if type(game) != Othello.Othello:
         raise TypeError("parameter game is not an Othello instance")
     successors = game.successors()
-    opponent_piece = game.count_disks(game.switch_turn())
+    least_opponent_piece = game.count_disks(game.switch_turn())
     most_elimination = successors[0]
     for successor in successors:
         new_oppo_piece = successor.count_disks(successor.switch_turn())
-        if new_oppo_piece < opponent_piece:
+        if new_oppo_piece < least_opponent_piece:
+            least_opponent_piece = new_oppo_piece
             most_elimination = successor
     return most_elimination
