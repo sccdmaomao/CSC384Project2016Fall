@@ -35,7 +35,7 @@ class Othello:
     def __init__(self, board=[[None]*8]*8, current_player=1):
         self.board = copy.deepcopy(board)
         self.current_player = current_player  # white player starts first
-        
+
     def successors(self):
         """
         Generate all position actions that can be performed based on current board and current player.
@@ -61,7 +61,7 @@ class Othello:
         """
 
         return 1 - self.current_player
-    
+
     def valid_position(self, pos):
         """
         Checks whether a position is valid at position pos to place a disk.
@@ -134,7 +134,7 @@ class Othello:
                 return True   # Game ended with no more possible move
             self.current_player = self.switch_turn()  # switch player back
         return False
-    
+
     def get_winner(self):
         """
         :return:  The winner or "Tie Game" for tie.
@@ -148,7 +148,7 @@ class Othello:
                 return 0
             return "Tie Game"  # Tie game
         return None  # no winner yet
-            
+
     def count_disks(self, color):
         """
         :param color: The color in which to count for.
@@ -161,7 +161,7 @@ class Othello:
                 if self.board[row][col] == color:
                     count += 1
         return count
-    
+
     def place_piece(self, position):
         """
         Place a piece of current player's color.
@@ -230,6 +230,12 @@ class Othello:
         # Switch turns
         self.current_player = self.switch_turn()
 
+    def clone(self):
+        """
+        Make a copy of current game state.
+        """
+        return copy.deepcopy(self)
+
     def print_board(self):
         """
         Print the String representation of the board.
@@ -243,5 +249,3 @@ class Othello:
                     char = self.board[row][col]
                 print(char, end="|")
             print("")
-
-
