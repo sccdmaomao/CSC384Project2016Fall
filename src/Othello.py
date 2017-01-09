@@ -36,6 +36,12 @@ class Othello:
         self.board = copy.deepcopy(board)
         self.current_player = current_player  # white player starts first
 
+    def initialize_board(self):
+        self.board[3][3] = 1
+        self.board[3][4] = 0
+        self.board[4][3] = 0
+        self.board[4][4] = 1
+
     def successors(self):
         """
         Generate all position actions that can be performed based on current board and current player.

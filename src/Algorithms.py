@@ -37,6 +37,7 @@ def most_eliminate(game):
             most_elimination = successor
     return most_elimination
 
+
 def minmax_move(game, depth, max_player):
     """
     Make a  best move that maximizes the max_player chances to win.
@@ -51,24 +52,26 @@ def minmax_move(game, depth, max_player):
     best_value = minmax(game.clone(best_move), d, False)
     for successor in successors:
         value = minmax(game.clone(best_move), d, False)
-        if((max_player and (value > best_value)) or (not max_player and (value < best_value))):
+        if (max_player and (value > best_value)) or (not max_player and (value < best_value)):
             best_move = successor
             best_value =value
     return best_move
-##### helper function to perform minmax algorithm ########
+
+
+# helper function to perform minmax algorithm ########
 def minmax(game, depth, max_player):
     """
     Returns the most number pieces on the board if the player makes a certain move.
     """
     if type(game) != Othello.Othello:
         raise TypeError("parameter game is not an Othello instance")
-    if(depth <= 0 or game.is_game_over()):
+    if depth <= 0 or game.is_game_over():
         return game.get_winner()
     successors = game.successors()
     if max_player:
-        #maximizing
-        best_value = game.count_disks(1) #because max_player is white.
+        # maximizing
+        best_value = game.count_disks(1) # because max_player is white.
         for successor in successors:
-            value = minmax(successor, depth -1, False) #false because next turn would be for black which is a min player.
+            value = minmax(successor, depth -1, False) # false because next turn would be for black which is a min player.
             best_value = max(best_value, value)
         return best_value
