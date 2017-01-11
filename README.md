@@ -31,6 +31,7 @@ Gurleen will be responsible for encoding the state space for Othello and testing
 
 The project has terminated due to reasons.
 Unimplemented class and methods are as follow:
+
 1. A state space for search
 2. minmax move for AI
 3. Testing scripts to produce empirical results
