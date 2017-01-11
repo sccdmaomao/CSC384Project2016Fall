@@ -29,4 +29,8 @@ Guohao will be responsible for encoding the search engine, which will use given 
 Gurleen will be responsible for encoding the state space for Othello and testing scripts for simulating the game, as well as generating useful text outputs for tracking and debugging purposes.
 
 
-
+The project has terminated due to reasons.
+Unimplemented class and methods are as follow:
+1. A state space for search
+2. minmax move for AI
+3. Testing scripts to produce empirical results
